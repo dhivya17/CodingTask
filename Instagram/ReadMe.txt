@@ -1,0 +1,2 @@
+Version 1.0 Build 1 14 Oct  17:28 GMT
+- InitialScreen contains Stories

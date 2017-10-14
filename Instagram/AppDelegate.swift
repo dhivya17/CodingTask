@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Instagram
 //
-//  Created by Ravneet Dhaliwal on 13/10/17.
+//  Created by Dhivya on 13/10/17.
 //  Copyright © 2017 mymac. All rights reserved.
 //
 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="headerView" id="fKd-z4-tEU" customClass="StoryHeaderView" customModule="Instagram" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="286" height="298"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profile-default" translatesAutoresizingMaskIntoConstraints="NO" id="Ey2-EX-zZh">
+                    <rect key="frame" x="4" y="4" width="278" height="248"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </imageView>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o1V-Ny-Imq">
+                    <rect key="frame" x="4" y="251" width="282" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="P9P-68-6KP"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="16"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1nC-gi-AQf">
+                    <rect key="frame" x="262" y="223" width="20" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="20" id="U5A-DJ-q4T"/>
+                        <constraint firstAttribute="height" constant="20" id="e9o-qS-aka"/>
+                    </constraints>
+                    <state key="normal" image="addIcon"/>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="Ey2-EX-zZh" firstAttribute="leading" secondItem="fKd-z4-tEU" secondAttribute="leading" constant="4" id="6gW-J4-I0j"/>
+                <constraint firstItem="o1V-Ny-Imq" firstAttribute="top" secondItem="Ey2-EX-zZh" secondAttribute="bottom" constant="-1" id="8qD-hb-lV1"/>
+                <constraint firstAttribute="trailing" secondItem="o1V-Ny-Imq" secondAttribute="trailing" id="C5E-MU-n7l"/>
+                <constraint firstItem="o1V-Ny-Imq" firstAttribute="leading" secondItem="fKd-z4-tEU" secondAttribute="leading" constant="4" id="Ehg-eW-Fw6"/>
+                <constraint firstAttribute="trailing" secondItem="Ey2-EX-zZh" secondAttribute="trailing" constant="4" id="YP3-dt-rvB"/>
+                <constraint firstAttribute="trailing" secondItem="1nC-gi-AQf" secondAttribute="trailing" constant="4" id="ZTU-fu-Vop"/>
+                <constraint firstItem="1nC-gi-AQf" firstAttribute="top" secondItem="Ey2-EX-zZh" secondAttribute="bottom" constant="-29" id="bBN-Z0-CXa"/>
+                <constraint firstItem="Ey2-EX-zZh" firstAttribute="top" secondItem="fKd-z4-tEU" secondAttribute="top" constant="4" id="jZz-t8-B2L"/>
+                <constraint firstAttribute="bottom" secondItem="Ey2-EX-zZh" secondAttribute="bottom" constant="46" id="mBW-P7-3tc"/>
+            </constraints>
+            <connections>
+                <outlet property="headerImage" destination="Ey2-EX-zZh" id="XcA-Jt-Jr1"/>
+                <outlet property="headerName" destination="o1V-Ny-Imq" id="D2V-05-XGL"/>
+            </connections>
+            <point key="canvasLocation" x="222" y="494"/>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <image name="addIcon" width="256" height="256"/>
+        <image name="profile-default" width="340" height="320"/>
+    </resources>
+</document>
