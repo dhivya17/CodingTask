@@ -8,13 +8,19 @@
 
 import UIKit
 
-class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
+class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,LightBoxMessage {
     
     @IBOutlet weak var storiesCollectionView: UICollectionView!
     var rowImage = [String]()
     var rowName = [String]()
     var data = [Any]()
     var jsonDict : [String:Any]?
+    var statusBarHidden  = false
+    var progressView : [UIProgressView]?
+    var dataIndexToShow :  Int?
+    var imageTimerCount = 0
+    var videoTimerCount = 0
+    var videoTimer, imageTimer : Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +39,7 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
         layout.headerReferenceSize = CGSize(width: 100, height: 100)
         storiesCollectionView!.collectionViewLayout = layout
         self.automaticallyAdjustsScrollViewInsets = false
+        
 
     }
     
@@ -46,7 +53,9 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
         return rowImage.count
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // [collectionView .deselectItem(at: , animated: YES)]
+        
+          addLightBox(indexPath)
+
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -69,6 +78,15 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
     }
     
     //MARK: - HELPERS
+    override var prefersStatusBarHidden: Bool{
+    return (self.statusBarHidden) ? true  : false;
+    }
+    func isLightBoxClosed(closed: Bool){
+        if closed {
+            statusBarHidden = !statusBarHidden
+            self.navigationController?.setNavigationBarHidden(statusBarHidden, animated: false)
+        }
+    }
     func readJSONData(){
         
         do {
@@ -97,8 +115,62 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
         
     }
     
+    func addLightBox(_ indexPath : IndexPath){
+        
+        //hide status bar and navigation bar so that lightbox in full screen
+        statusBarHidden = !statusBarHidden
+        self.navigationController?.setNavigationBarHidden(statusBarHidden, animated: false)
+
+        let lightBoxView = Bundle.main.loadNibNamed("LightBoxView", owner: nil, options: nil)?[0] as! LightBoxView
+        lightBoxView.delegate = self
+        let dataToShow =  data[indexPath.row] as! [Any]
+        progressView =  lightBoxView.addProgressBar(count: dataToShow.count)
+        UIView.transition(with: self.view, duration: 0.5, options: .transitionCrossDissolve, animations: { () -> Void in
+           
+            self.view.addSubview(lightBoxView)
+            
+        }, completion: nil)
+        
+        //  add constrainsts
+        let topConstraint = NSLayoutConstraint(item:self.view , attribute: .top, relatedBy: .equal, toItem: lightBoxView, attribute: .top, multiplier: 1, constant: 0)
+        let bottomConstraint = NSLayoutConstraint(item: self.view, attribute: .bottom, relatedBy: .equal, toItem: lightBoxView, attribute: .bottom, multiplier: 1, constant: 0)
+        let leadingConstraint = NSLayoutConstraint(item: self.view, attribute: .leading, relatedBy: .equal, toItem: lightBoxView, attribute: .leading, multiplier: 1, constant: 0)
+        let trailingConstraint = NSLayoutConstraint(item: self.view, attribute: .trailing, relatedBy: .equal, toItem: lightBoxView, attribute: .trailing, multiplier: 1, constant: 0)
+        lightBoxView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addConstraints([topConstraint, bottomConstraint, leadingConstraint, trailingConstraint])
+        lightBoxView.translatesAutoresizingMaskIntoConstraints = false
+        
+
+}
+
+
+
+    func updateTimerImage(timer : Timer){
+       
+        let count : Int = (timer.userInfo as? Int)!
+        print("updateTimerImage called\(count)")
+        progressView?[count].tintColor = UIColor.white
+        progressView?[count].progress += 0.2
+        progressView?[count].tintColor = UIColor.white
+        imageTimerCount  += 1
+        if imageTimerCount == 5 {
+            imageTimer?.invalidate()
+        }
+        
+    }
+    func updateTimerVideo(){
+          print("updateTimerVideo called")
+    //  progressView?[dataIndexToShow!].progress += 0.1
+      //progressView?[dataIndexToShow!].tintColor = UIColor.white
+    }
+    //MARK: Delay func
     
+    func delay(_ delay:Double, closure:@escaping ()->()) {
+        DispatchQueue.main.asyncAfter(
+            deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
+    }
     
+
 }
 extension UIImage {
     var circleMask: UIImage {
@@ -120,15 +192,4 @@ extension UIImage {
         
     }
     
-    func imageWithInsets(insets: UIEdgeInsets) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(
-            CGSize(width: self.size.width + insets.left + insets.right,
-                   height: self.size.height + insets.top + insets.bottom), false, self.scale)
-        let _ = UIGraphicsGetCurrentContext()
-        let origin = CGPoint(x: insets.left, y: insets.top)
-        self.draw(at: origin)
-        let imageWithInsets = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return imageWithInsets
-    }
 }

@@ -29,7 +29,7 @@
                         </constraints>
                         <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="16"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                        <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="highlightedColor" cocoaTouchSystemColor="darkTextColor"/>
                     </label>
                 </subviews>
             </view>

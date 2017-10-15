@@ -19,9 +19,9 @@
 		1F34EF891F91C81F005C0A7E /* StoriesCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F34EF871F91C81F005C0A7E /* StoriesCollectionViewCell.xib */; };
 		1F34EF8C1F920D73005C0A7E /* StoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F34EF8A1F920D73005C0A7E /* StoryHeaderView.swift */; };
 		1F34EF8D1F920D73005C0A7E /* StoryHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F34EF8B1F920D73005C0A7E /* StoryHeaderView.xib */; };
-		1F34EF901F9218F3005C0A7E /* addIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F34EF8E1F9218F3005C0A7E /* addIcon.png */; };
-		1F34EF911F9218F3005C0A7E /* profile-default.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1F34EF8F1F9218F3005C0A7E /* profile-default.jpg */; };
 		1F34EF931F921C06005C0A7E /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1F34EF921F921C06005C0A7E /* ReadMe.txt */; };
+		1F34EF991F926965005C0A7E /* LightBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F34EF981F926965005C0A7E /* LightBoxView.swift */; };
+		1F34EF9B1F926981005C0A7E /* LightBoxView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F34EF9A1F926981005C0A7E /* LightBoxView.xib */; };
 		1FCF51721F90F93500009A88 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FCF51711F90F93500009A88 /* AppDelegate.swift */; };
 		1FCF51741F90F93500009A88 /* StoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FCF51731F90F93500009A88 /* StoriesViewController.swift */; };
 		1FCF51771F90F93500009A88 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FCF51751F90F93500009A88 /* Main.storyboard */; };
@@ -42,9 +42,9 @@
 		1F34EF871F91C81F005C0A7E /* StoriesCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoriesCollectionViewCell.xib; sourceTree = "<group>"; };
 		1F34EF8A1F920D73005C0A7E /* StoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryHeaderView.swift; sourceTree = "<group>"; };
 		1F34EF8B1F920D73005C0A7E /* StoryHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryHeaderView.xib; sourceTree = "<group>"; };
-		1F34EF8E1F9218F3005C0A7E /* addIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addIcon.png; sourceTree = "<group>"; };
-		1F34EF8F1F9218F3005C0A7E /* profile-default.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "profile-default.jpg"; sourceTree = "<group>"; };
 		1F34EF921F921C06005C0A7E /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ReadMe.txt; path = Instagram/ReadMe.txt; sourceTree = "<group>"; };
+		1F34EF981F926965005C0A7E /* LightBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightBoxView.swift; sourceTree = "<group>"; };
+		1F34EF9A1F926981005C0A7E /* LightBoxView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LightBoxView.xib; sourceTree = "<group>"; };
 		1FCF516E1F90F93500009A88 /* Instagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FCF51711F90F93500009A88 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1FCF51731F90F93500009A88 /* StoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesViewController.swift; sourceTree = "<group>"; };
@@ -101,6 +101,8 @@
 			children = (
 				1FCF51711F90F93500009A88 /* AppDelegate.swift */,
 				1FCF51731F90F93500009A88 /* StoriesViewController.swift */,
+				1F34EF981F926965005C0A7E /* LightBoxView.swift */,
+				1F34EF9A1F926981005C0A7E /* LightBoxView.xib */,
 				1F34EF861F91C81F005C0A7E /* StoriesCollectionViewCell.swift */,
 				1F34EF8A1F920D73005C0A7E /* StoryHeaderView.swift */,
 				1F34EF8B1F920D73005C0A7E /* StoryHeaderView.xib */,
@@ -110,8 +112,6 @@
 				1FCF517A1F90F93500009A88 /* LaunchScreen.storyboard */,
 				1F34EF801F9121A7005C0A7E /* Data.json */,
 				1FCF517D1F90F93500009A88 /* Info.plist */,
-				1F34EF8E1F9218F3005C0A7E /* addIcon.png */,
-				1F34EF8F1F9218F3005C0A7E /* profile-default.jpg */,
 				1F34EF7D1F9108FA005C0A7E /* Videos */,
 			);
 			path = Instagram;
@@ -178,13 +178,12 @@
 			files = (
 				1F34EF811F9121A7005C0A7E /* Data.json in Resources */,
 				1F34EF761F9108EE005C0A7E /* video1.mp4 in Resources */,
-				1F34EF901F9218F3005C0A7E /* addIcon.png in Resources */,
 				1F34EF771F9108EE005C0A7E /* video2.mp4 in Resources */,
+				1F34EF9B1F926981005C0A7E /* LightBoxView.xib in Resources */,
 				1F34EF7A1F9108EE005C0A7E /* video5.mp4 in Resources */,
 				1FCF517C1F90F93500009A88 /* LaunchScreen.storyboard in Resources */,
 				1F34EF931F921C06005C0A7E /* ReadMe.txt in Resources */,
 				1F34EF8D1F920D73005C0A7E /* StoryHeaderView.xib in Resources */,
-				1F34EF911F9218F3005C0A7E /* profile-default.jpg in Resources */,
 				1F34EF891F91C81F005C0A7E /* StoriesCollectionViewCell.xib in Resources */,
 				1F34EF781F9108EE005C0A7E /* video3.mp4 in Resources */,
 				1F34EF7C1F9108EE005C0A7E /* video7.mp4 in Resources */,
@@ -205,6 +204,7 @@
 				1FCF51741F90F93500009A88 /* StoriesViewController.swift in Sources */,
 				1F34EF8C1F920D73005C0A7E /* StoryHeaderView.swift in Sources */,
 				1FCF51721F90F93500009A88 /* AppDelegate.swift in Sources */,
+				1F34EF991F926965005C0A7E /* LightBoxView.swift in Sources */,
 				1F34EF881F91C81F005C0A7E /* StoriesCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
