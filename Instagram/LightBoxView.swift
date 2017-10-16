@@ -2,16 +2,31 @@
 //  LightBoxView.swift
 //  Instagram
 //
-//  Created by Ravneet Dhaliwal on 14/10/17.
+//  Created by Dhivya on 14/10/17.
 //  Copyright © 2017 mymac. All rights reserved.
 //
 
 import UIKit
+import AVFoundation
+import AVKit
 protocol LightBoxMessage {
     func isLightBoxClosed(closed: Bool)
 }
 class LightBoxView: UIView {
     var delegate : LightBoxMessage?
+    @IBOutlet var videoView: UIView!
+    @IBOutlet var imageView: UIImageView!
+    @IBOutlet var closeButton: UIButton!
+    @IBOutlet var swipeView: UIView!
+    
+    /*
+     // Only override draw() if you perform custom drawing.
+     // An empty implementation adversely affects performance during animation.
+     override func draw(_ rect: CGRect) {
+     // Drawing code
+     }
+     
+     */
     @IBAction func closeAction(_ sender: Any) {
         UIView.transition(with: self.superview!, duration: 0.5, options: .transitionFlipFromRight, animations: { () -> Void in
                     self.delegate?.isLightBoxClosed(closed: true)
@@ -38,14 +53,14 @@ class LightBoxView: UIView {
         }
         return progressBarArray
     }
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+
+    func setUpView(index:Int, dataToShow:[Any]){
+        let dict =  dataToShow[index] as! [String : String]
+        if dict["wrapperType"] == "image" {
+            self.imageView.isHidden = false
+            let image  = UIImage(named: dict["name"]!)
+            imageView.image = image
+        }       
     }
-     
-    */
-    
 
 }

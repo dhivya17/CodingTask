@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AVFoundation
+import AVKit
 
 class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,LightBoxMessage {
     
@@ -17,10 +19,13 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
     var jsonDict : [String:Any]?
     var statusBarHidden  = false
     var progressView : [UIProgressView]?
-    var dataIndexToShow :  Int?
-    var imageTimerCount = 0
-    var videoTimerCount = 0
-    var videoTimer, imageTimer : Timer?
+    var dataIndexToShow :  Int = 0
+    var timer : Timer?
+    var dataToShow: [Any]?
+    var lightBoxView : LightBoxView?
+    var avPlayer : AVPlayer?
+    var timeObserver: AnyObject!
+    var indexPathToShow : IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +45,7 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
         storiesCollectionView!.collectionViewLayout = layout
         self.automaticallyAdjustsScrollViewInsets = false
         
-
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -54,8 +59,8 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-          addLightBox(indexPath)
-
+        addLightBox(indexPath)
+        
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -66,11 +71,11 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
         cell.stroyImageView.image = image?.circleMask
         return cell
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerView", for: indexPath) as! StoryHeaderView
         
-         header.headerName.text = "Santo"
+        header.headerName.text = "Santo"
         let image  = UIImage(named: "image5")
         header.headerImage.image = image?.circleMask
         
@@ -79,12 +84,13 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
     
     //MARK: - HELPERS
     override var prefersStatusBarHidden: Bool{
-    return (self.statusBarHidden) ? true  : false;
+        return (self.statusBarHidden) ? true  : false;
     }
     func isLightBoxClosed(closed: Bool){
         if closed {
             statusBarHidden = !statusBarHidden
             self.navigationController?.setNavigationBarHidden(statusBarHidden, animated: false)
+            resetTimer()
         }
     }
     func readJSONData(){
@@ -120,14 +126,15 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
         //hide status bar and navigation bar so that lightbox in full screen
         statusBarHidden = !statusBarHidden
         self.navigationController?.setNavigationBarHidden(statusBarHidden, animated: false)
-
-        let lightBoxView = Bundle.main.loadNibNamed("LightBoxView", owner: nil, options: nil)?[0] as! LightBoxView
-        lightBoxView.delegate = self
-        let dataToShow =  data[indexPath.row] as! [Any]
-        progressView =  lightBoxView.addProgressBar(count: dataToShow.count)
+        
+        lightBoxView = Bundle.main.loadNibNamed("LightBoxView", owner: nil, options: nil)?[0] as? LightBoxView
+        lightBoxView?.delegate = self
+        dataToShow =  data[indexPath.row] as? [Any]
+        progressView =  lightBoxView?.addProgressBar(count: (dataToShow?.count)!)
+        indexPathToShow = indexPath
         UIView.transition(with: self.view, duration: 0.5, options: .transitionCrossDissolve, animations: { () -> Void in
-           
-            self.view.addSubview(lightBoxView)
+            
+            self.view.addSubview(self.lightBoxView!)
             
         }, completion: nil)
         
@@ -136,41 +143,166 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
         let bottomConstraint = NSLayoutConstraint(item: self.view, attribute: .bottom, relatedBy: .equal, toItem: lightBoxView, attribute: .bottom, multiplier: 1, constant: 0)
         let leadingConstraint = NSLayoutConstraint(item: self.view, attribute: .leading, relatedBy: .equal, toItem: lightBoxView, attribute: .leading, multiplier: 1, constant: 0)
         let trailingConstraint = NSLayoutConstraint(item: self.view, attribute: .trailing, relatedBy: .equal, toItem: lightBoxView, attribute: .trailing, multiplier: 1, constant: 0)
-        lightBoxView.translatesAutoresizingMaskIntoConstraints = false
+        lightBoxView?.translatesAutoresizingMaskIntoConstraints = false
         self.view.addConstraints([topConstraint, bottomConstraint, leadingConstraint, trailingConstraint])
-        lightBoxView.translatesAutoresizingMaskIntoConstraints = false
+        lightBoxView?.translatesAutoresizingMaskIntoConstraints = false
         
-
-}
-
-
-
-    func updateTimerImage(timer : Timer){
-       
-        let count : Int = (timer.userInfo as? Int)!
-        print("updateTimerImage called\(count)")
-        progressView?[count].tintColor = UIColor.white
-        progressView?[count].progress += 0.2
-        progressView?[count].tintColor = UIColor.white
-        imageTimerCount  += 1
-        if imageTimerCount == 5 {
-            imageTimer?.invalidate()
+        self.timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
+        
+        setupSwipeGestureRecognizer()
+        
+    }
+    
+    func resetTimer(){
+        timer?.invalidate()
+        timer = nil
+        dataIndexToShow = 0
+    }
+    func updateTimer(){
+        
+        if dataIndexToShow == dataToShow?.count
+        {
+            resetTimer()
+        }
+        else
+        {
+            //print("updateTimerImage called\(dataIndexToShow)")
+            let dict =  dataToShow?[dataIndexToShow] as! [String : String]
+            if dict["wrapperType"] == "image" {
+                lightBoxView?.imageView.isHidden = false
+                progressView?[dataIndexToShow].progress += 0.1
+                progressView?[dataIndexToShow].tintColor = UIColor.white
+                lightBoxView?.setUpView(index: dataIndexToShow, dataToShow: dataToShow!)
+                if progressView?[dataIndexToShow].progress == 1 {
+                    dataIndexToShow += 1
+                }
+            }
+            else if dict["wrapperType"] == "video" {
+                
+                addVideo(dict["name"]!)
+                timer?.invalidate()
+                timer = nil
+                
+            }
+            
+            
         }
         
     }
-    func updateTimerVideo(){
-          print("updateTimerVideo called")
-    //  progressView?[dataIndexToShow!].progress += 0.1
-      //progressView?[dataIndexToShow!].tintColor = UIColor.white
+    func addVideo(_ fileName : String){
+        
+        let filepath: String? = Bundle.main.path(forResource: fileName, ofType: "mp4")
+        let fileURL = URL.init(fileURLWithPath: filepath!)
+        avPlayer = AVPlayer(url: fileURL)
+        let avPlayerController = AVPlayerViewController()
+        avPlayerController.player = avPlayer
+        avPlayer?.volume = 5.0
+        avPlayerController.view.frame = (lightBoxView?.videoView.frame)!
+        avPlayerController.showsPlaybackControls = false
+        avPlayerController.player?.play()
+        lightBoxView?.videoView.addSubview(avPlayerController.view)
+        lightBoxView?.imageView.isHidden = true
+        let timeInterval: CMTime = CMTimeMakeWithSeconds(1.0, 10)
+        timeObserver = avPlayer!.addPeriodicTimeObserver(forInterval: timeInterval,
+                                                         queue: DispatchQueue.main) { (elapsedTime: CMTime) -> Void in
+                                                            
+                                                            self.observeTime(elapsedTime: elapsedTime)
+            } as AnyObject
+        
     }
-    //MARK: Delay func
-    
-    func delay(_ delay:Double, closure:@escaping ()->()) {
-        DispatchQueue.main.asyncAfter(
-            deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
+    func observeTime(elapsedTime: CMTime) {
+        let duration = CMTimeGetSeconds((avPlayer?.currentItem!.duration)!)
+        
+        if duration.isFinite {
+            let elapsedTime : Float64 = CMTimeGetSeconds(elapsedTime)
+            print("inside observeTime\(elapsedTime) duration\(duration) dataIndexToShow\(dataIndexToShow) progress --\(String(describing:  progressView?[dataIndexToShow].progress))")
+            progressView?[dataIndexToShow].progress += Float(elapsedTime/duration) - 0.01
+            progressView?[dataIndexToShow].tintColor = UIColor.white
+            if progressView?[dataIndexToShow].progress == 1 && elapsedTime == duration  {
+                dataIndexToShow += 1
+                timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
+            }
+            
+        }
+    }
+    //MARK:-GESTURE
+    func setUpTapGestureRecognizer() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
+        lightBoxView?.swipeView.addGestureRecognizer(tapGesture)
     }
     
-
+    func handleTapAction(_ sender: UITapGestureRecognizer){
+        timer?.invalidate()
+        timer = nil
+        self.timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
+        let dict =  dataToShow?[dataIndexToShow] as! [String : String]
+        if dict["wrapperType"] == "image" {
+            progressView?[dataIndexToShow].progress = 1
+        }
+        else{
+            avPlayer?.removeTimeObserver(timeObserver)
+            progressView?[dataIndexToShow].progress = 1
+        }
+        if dataIndexToShow < (dataToShow?.count)!{
+            
+            dataIndexToShow += 1
+        }
+        
+        
+    }
+    
+    func setupSwipeGestureRecognizer() {
+        
+        //For left swipe
+        let swipeGestureLeft = UISwipeGestureRecognizer(target: self, action: #selector(self.swipedScreen))
+        swipeGestureLeft.direction = .left
+        lightBoxView?.swipeView.addGestureRecognizer(swipeGestureLeft)
+        
+        //For right swipe
+        let swipeGestureRight = UISwipeGestureRecognizer(target: self, action: #selector(self.swipedScreen))
+        swipeGestureRight.direction = .right
+        lightBoxView?.swipeView.addGestureRecognizer(swipeGestureRight)
+        
+    }
+    func swipedScreen(gesture: UISwipeGestureRecognizer) {
+        if (indexPathToShow?.row)! >= 0 && (indexPathToShow?.row)! < rowImage.count  {
+            if gesture.direction == .left {
+                guard (indexPathToShow?.row)! + 1  >= rowImage.count else{
+                    indexPathToShow = IndexPath(row: (indexPathToShow?.row)! + 1, section: (indexPathToShow?.section)!)
+                    resetTimer()
+                    if self.view.subviews.contains(lightBoxView!) {
+                        self.lightBoxView?.removeFromSuperview()
+                        addLightBox(indexPathToShow!)
+                        statusBarHidden = !statusBarHidden
+                        self.navigationController?.setNavigationBarHidden(statusBarHidden, animated: false)
+                        
+                    }
+                    
+                    return
+                }
+            }
+            else if gesture.direction == .right {
+                guard (indexPathToShow?.row)! - 1 < 0 else{
+                    indexPathToShow = IndexPath(row: (indexPathToShow?.row)! - 1, section: (indexPathToShow?.section)!)
+                    resetTimer()
+                    if self.view.subviews.contains(lightBoxView!) {
+                        self.lightBoxView?.removeFromSuperview()
+                        addLightBox(indexPathToShow!)
+                        statusBarHidden = !statusBarHidden
+                        self.navigationController?.setNavigationBarHidden(statusBarHidden, animated: false)
+                        
+                    }
+                    return
+                }
+                
+            }
+        }
+    }
+    
+    //MARK:-DEINIT
+    deinit {
+        avPlayer?.removeTimeObserver(timeObserver)
+    }
 }
 extension UIImage {
     var circleMask: UIImage {

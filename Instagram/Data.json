@@ -11,7 +11,7 @@
                  },
                  {
                  "wrapperType": "video",
-                 "name": "video2.mp4"
+                 "name": "video2"
                  },
                  {
                  "wrapperType": "image",
@@ -28,7 +28,7 @@
 		"outlinName": "Animal_Story",
 		"data": [{
                  "wrapperType": "image",
-                 "name": "image1"
+                 "name": "image7"
                  }, {
                  "wrapperType": "image",
                  "name": "image2"
@@ -39,7 +39,7 @@
                  },
                  {
                  "wrapperType": "video",
-                 "name": "video3.mp4"
+                 "name": "video3"
                  },
                  {
                  "wrapperType": "image",
@@ -94,7 +94,7 @@
 		"outlinName": "NaturalScenes",
 		"data": [{
                  "wrapperType": "video",
-                 "name": "video4.mp4"
+                 "name": "video4"
                  },
                  {
                  "wrapperType": "image",
@@ -102,7 +102,7 @@
                  },
                  {
                  "wrapperType": "video",
-                 "name": "video6.mp4"
+                 "name": "video6"
                  },
                  {
                  "wrapperType": "image",
@@ -122,11 +122,11 @@
                  },
                  {
                  "wrapperType": "video",
-                 "name": "video5.mp4"
+                 "name": "video5"
                  },
                  {
                  "wrapperType": "video",
-                 "name": "video1.mp4"
+                 "name": "video1"
                  }
                  ]
   }
