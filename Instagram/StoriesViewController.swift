@@ -162,7 +162,30 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
         
         if dataIndexToShow == dataToShow?.count
         {
-            resetTimer()
+            if (indexPathToShow?.row)! + 1  >= rowImage.count{
+                resetTimer()
+                if self.view.subviews.contains(lightBoxView!) {
+                    UIView.transition(with: self.view, duration: 0.5, options: .transitionCrossDissolve, animations: { () -> Void in
+                         self.lightBoxView?.removeFromSuperview()
+                    }, completion: nil)
+                  
+                    statusBarHidden = !statusBarHidden
+                    self.navigationController?.setNavigationBarHidden(statusBarHidden, animated: false)
+                }
+                dataIndexToShow = 0
+            }
+            else{
+                indexPathToShow = IndexPath(row: (indexPathToShow?.row)! + 1, section: (indexPathToShow?.section)!)
+                resetTimer()
+                if self.view.subviews.contains(lightBoxView!) {
+                    self.lightBoxView?.removeFromSuperview()
+                    addLightBox(indexPathToShow!)
+                    statusBarHidden = !statusBarHidden
+                    self.navigationController?.setNavigationBarHidden(statusBarHidden, animated: false)
+                }
+                
+            }
+
         }
         else
         {
@@ -178,7 +201,6 @@ class StoriesViewController: UIViewController,UICollectionViewDelegate,UICollect
                 }
             }
             else if dict["wrapperType"] == "video" {
-                
                 addVideo(dict["name"]!)
                 timer?.invalidate()
                 timer = nil

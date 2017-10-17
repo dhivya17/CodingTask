@@ -6,3 +6,6 @@ Version 1.0 Build 2 15 Oct
 
 Version 1.0 Build 3 16 Oct 12:03 GMT
 - Progress bar update for Image and video
+
+Version 1.0 Build 4 17 Oct 4:41 GMT
+- Contionus movement and auto close slideshow
